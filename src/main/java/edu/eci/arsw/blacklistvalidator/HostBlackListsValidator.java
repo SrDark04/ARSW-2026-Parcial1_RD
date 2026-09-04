@@ -7,7 +7,7 @@ package edu.eci.arsw.blacklistvalidator;
 
 import edu.eci.arsw.spamkeywordsdatasource.HostBlacklistsDataSourceFacade;
 import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,7 +29,7 @@ public class HostBlackListsValidator {
      * @param ipaddress suspicious host's IP address.
      * @return  Blacklists numbers where the given host's IP address was found.
      */
-    public List<Integer> checkHost(String ipaddress){
+    public List<Integer> checkHost(String ipaddress, int threads){
         
         LinkedList<Integer> blackListOcurrences=new LinkedList<>();
         
@@ -38,6 +38,10 @@ public class HostBlackListsValidator {
         HostBlacklistsDataSourceFacade skds=HostBlacklistsDataSourceFacade.getInstance();
         
         int checkedListsCount=0;
+
+        ArrayList<HostSearch> hostSearchThreads = hostSearchThreads = separateList(threads, skds, ipaddress);
+
+        startHilos(hostSearchThreads);
         
         for (int i=0;i<skds.getRegisteredServersCount() && ocurrencesCount<BLACK_LIST_ALARM_COUNT;i++){
             checkedListsCount++;
@@ -66,5 +70,31 @@ public class HostBlackListsValidator {
     private static final Logger LOG = Logger.getLogger(HostBlackListsValidator.class.getName());
     
     
+    private static ArrayList<HostSearch> separateList(int threads, HostBlacklistsDataSourceFacade skds, String ipAddress){
+
+        int range = skds.getRegisteredServersCount() / threads;
+        int residue = skds.getRegisteredServersCount() % threads;
+
+        ArrayList<HostSearch> searchedThreads = new ArrayList<>();
     
+        for(int i = 0; i < threads; i++){
+            int head = range * i;
+            int tail = range * (i + 1);
+
+            if(i + 1 == threads){
+                tail = skds.getRegisteredServersCount() + 1; 
+            }
+
+            HostSearch h = new HostSearch(head, tail, ipAddress, skds);
+            searchedThreads.add(h);
+        }
+        return searchedThreads;
+    }
+
+    private static void startHilos(ArrayList<HostSearch> threads){
+        for(HostSearch h : threads){
+            h.start();
+        }
+    }
+
 }

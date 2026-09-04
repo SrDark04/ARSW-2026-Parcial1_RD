@@ -19,11 +19,15 @@ public class HostSearch extends Thread{
         this.ipAddress = ipAddress;
     }
 
+
+    /*
+    * Se realiza la implementacion de la sobreescritura del metodo run(), teniendo en cuenta solo recorrer 
+    * un segmento de la lista que nos dan para este servidor.
+    */
     @Override
     public void run(){
         for(int i = head; i < tail; i++){
             if (hbldsf.isInBlackListServer(i, ipAddress)){
-                
                 hostSearched++;
             }
         }
