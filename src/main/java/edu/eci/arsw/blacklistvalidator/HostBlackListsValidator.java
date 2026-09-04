@@ -69,11 +69,12 @@ public class HostBlackListsValidator {
     
     private static final Logger LOG = Logger.getLogger(HostBlackListsValidator.class.getName());
     
-    
+    /*
+    * Separa la lista de host en la cantidad de hilos pertinente, teniendo en cuenta si es impar o no
+    */
     private static ArrayList<HostSearch> separateList(int threads, HostBlacklistsDataSourceFacade skds, String ipAddress){
 
         int range = skds.getRegisteredServersCount() / threads;
-        int residue = skds.getRegisteredServersCount() % threads;
 
         ArrayList<HostSearch> searchedThreads = new ArrayList<>();
     
@@ -91,6 +92,10 @@ public class HostBlackListsValidator {
         return searchedThreads;
     }
 
+
+    /*
+    * Inicializa todos los hilos
+    */
     private static void startHilos(ArrayList<HostSearch> threads){
         for(HostSearch h : threads){
             h.start();
