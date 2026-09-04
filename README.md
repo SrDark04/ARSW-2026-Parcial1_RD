@@ -21,7 +21,7 @@ Dicho componente está diseñado de acuerdo con el siguiente diagrama, donde:
 
 Al usarse el módulo, la evidencia de que se hizo el registro como 'confiable' o 'no confiable' se dá por lo mensajes de LOGs:
 
-INFO: HOST 205.24.34.55 Reported as trustworthy
+INFO: HOST 205.24.24.55 Reported as trustworthy
 
 INFO: HOST 205.24.34.55 Reported as NOT trustworthy
 
