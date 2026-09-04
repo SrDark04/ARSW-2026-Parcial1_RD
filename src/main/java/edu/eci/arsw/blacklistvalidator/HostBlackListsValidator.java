@@ -55,7 +55,7 @@ public class HostBlackListsValidator {
             }
         }
         */
-        if(ocurrencesCount.get()>=BLACK_LIST_ALARM_COUNT){
+        if(threadsLives(hostSearchThreads)){
             if (ocurrencesCount.get()>=BLACK_LIST_ALARM_COUNT){
                 skds.reportAsNotTrustworthy(ipaddress);
             }
