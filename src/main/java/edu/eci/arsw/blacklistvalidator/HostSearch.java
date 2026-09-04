@@ -1,22 +1,26 @@
 package edu.eci.arsw.blacklistvalidator;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import edu.eci.arsw.spamkeywordsdatasource.HostBlacklistsDataSourceFacade;
 
 public class HostSearch extends Thread{
 
     private int head;
     private int tail;
-    private int hostSearched;
+    private AtomicInteger checkedListCount;
     private HostBlacklistsDataSourceFacade hbldsf;
     private String ipAddress;
+    private AtomicInteger chekedHostCounter;
 
 
-    public HostSearch(int head, int tail, String ipAdress, HostBlacklistsDataSourceFacade hbldsf){
+    public HostSearch(int head, int tail, String ipAdress, HostBlacklistsDataSourceFacade hbldsf, AtomicInteger chekedHostCounter, AtomicInteger checkedListCount){
         this.head = head;
         this.tail = tail;
         this.hbldsf = hbldsf;
-        this.hostSearched = 0;
+        this.checkedListCount = checkedListCount;
         this.ipAddress = ipAddress;
+        this.chekedHostCounter = chekedHostCounter;
     }
 
 
@@ -26,9 +30,10 @@ public class HostSearch extends Thread{
     */
     @Override
     public void run(){
-        for(int i = head; i < tail; i++){
+        for(int i = head; i < tail && chekedHostCounter.get()<5; i++){
             if (hbldsf.isInBlackListServer(i, ipAddress)){
-                hostSearched++;
+                chekedHostCounter.getAndIncrement();
+                checkedListCount.getAndIncrement();
             }
         }
     }          
